@@ -24,7 +24,7 @@ db.query("SELECT * FROM users", (err, result) => {
   });
   
 app.get('/', (req, res) => {
-  res.send('Hello World!')
+  res.send('Hello World')
 })
 
 const port = process.env.PORT;
