@@ -1,34 +1,16 @@
-const db = require('./config/db.js');
 const express = require('express')
-const app = express()
+const dotenv = require('dotenv');
+const userRoutes = require('./routes/userRoutes');
 
-require('dotenv').config()
+const app = express();
+dotenv.config();
 
+app.use(express.json());
 
-app.post('/users', (req, res) => {
-  db.query(`INSERT INTO users(username, password) VALUES('ubaid', '')`, (err, result) => {
-    if(err){
-        res.send(err)
-    }else{
-        res.send(result)
-    }
-    res.end()
-  })
-});
-db.query("SELECT * FROM users", (err, result) => {
-    if (err) {
-      console.log(err);
-    }else{
-      console.log(result);
-    }
-  });
-  
-app.get('/', (req, res) => {
-  res.send('Hello World')
-})
+app.use('/api/v1', userRoutes);
 
 const port = process.env.PORT;
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+  console.log(`Example app listening on port ${port}`);
 })

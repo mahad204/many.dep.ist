@@ -1,22 +1,19 @@
 const db = require('../config/db');
+const User = require('../models/User');
 
 const  createUser =  async (req, res) => {
-    const { username, email, password } = req.body;
-    db.query(`INSERT INTO users(username, password) VALUES('ubaid', '')`, (err, result) => {
+    const user = req.body;
+    User.create(user, (err, result) => {
         if(err){
             res.status(400).json(err);
         }else{
-            const newUser = {
-                "user_id": result.insertId,
-                "username": username,
-            }
-            res.status(201).json(newUser);
+            res.status(201).json({"message": "Successfully created!"});
         }
     })
 }
 
 const getAllUsers = async (req, res) => {
-    db.query("SELECT * FROM users", (err, result) => {
+    User.findAll((err, result) => {
         if(err){
             res.status(400).json(err);
         }else if(result.length === 0){
@@ -30,7 +27,7 @@ const getAllUsers = async (req, res) => {
 const getUserById = async (req, res) => {
     const { id } = req.params;
     console.log(id);
-    db.query(`SELECT * FROM users WHERE user_id=${id}`, (err, result) => {
+    User.findById(id, (err, result) => {
       if(err){
           res.status(400).json(err);
       }
@@ -44,27 +41,28 @@ const getUserById = async (req, res) => {
 
 const updateUserById = async (req, res) => {
     const { id } = req.params;
-    const { username, email, password} = req.body;
-    db.query(`UPDATE users SET username='${username}', email='${email}', password='${password}' WHERE user_id=${id}`, (err, result) => {
+    const user = req.body;
+    user.id = id;
+    User.update(user, (err, result) => {
         if(err){
             res.status(400).json(err);
         }else if(result.affectedRows === 0){
             res.status(404).json({"message": "User not found"});
         }else{
-            res.status(200).json(result);
+            res.status(200).json({"message": "Record updated!"});
         }
     })
 }
 
 const deleteUserById = async (req, res) => {
     const { id } = req.params;
-    db.query(`DELETE FROM users WHERE user_id=${id}`, (err, result) => {
+    User.delete(id, (err, result) => {
         if(err){
             res.status(400).json(err);
         }else if(result.affectedRows === 0){
             res.status(404).json({"message": "No user found!"})
         }else{
-            res.status(200).json(result)
+            res.status(200).json({"message": "User Deleted!"})
         }
     })
 }
